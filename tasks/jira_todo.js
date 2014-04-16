@@ -104,7 +104,18 @@ module.exports = function (grunt) {
                 }
             }, function (err, response, body) {
                 if (err) {
-                    grunt.fail.warn('Error retrieving status for %s: %s', issueKey, err.toString());
+                    grunt.fail.warn(util.format(
+                        'Error retrieving status for %s: "%s"',
+                        issueKey, err.toString()
+                    ));
+                    return cb();
+                }
+
+                if (response.statusCode >= 400) {
+                    grunt.fail.warn(util.format(
+                        'Request to Jira failed with status code %d.',
+                        response.statusCode
+                    ));
                     return cb();
                 }
 
