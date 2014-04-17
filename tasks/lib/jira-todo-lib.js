@@ -10,14 +10,15 @@ var _ = require('lodash'),
     XRegExp = require('xregexp').XRegExp;
 
 function JiraTodo(grunt, options) {
-    console.log('------');
-    console.log(arguments.length);
-    console.log('------');
+    _.defaults(options, {
+        regex: 'todo:?\\s*(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'
+    });
+    
     this.grunt = grunt;
     this.opts = options;
-    this.regex = XRegExp(this.opts.regex, 'gi');
+    this.regex = XRegExp(options.regex, 'gi');
 
-    if (this.opts.projects.length === 0) {
+    if (!this.opts.projects || !this.opts.projects.length) {
         this.grunt.log.warn('You have not specified any projects.');
     }
 }
@@ -43,7 +44,6 @@ JiraTodo.prototype.extractTodosFromFile = function (file) {
         result = [],
         source = this.grunt.file.read(file),
         ast = esprima.parse(source, {
-            loc: true,
             comment: true
         });
 
@@ -52,8 +52,7 @@ JiraTodo.prototype.extractTodosFromFile = function (file) {
             (node.comments || []).forEach(function (commentNode) {
                 self.parseString(commentNode.value).forEach(function (issue) {
                     result.push(_.extend(issue, {
-                        file: file,
-                        loc: commentNode.loc
+                        file: file
                     }));
                 });
             });
@@ -70,7 +69,7 @@ JiraTodo.prototype.parseString = function (string) {
         result.push({
             key: matches.key,
             project: matches.project,
-            number: matches.number
+            number: parseInt(matches.number, 10)
         });
     });
 

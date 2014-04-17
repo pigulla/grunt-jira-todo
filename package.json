@@ -40,7 +40,8 @@
     "grunt-contrib-clean": "0.5.0",
     "grunt-contrib-jshint": "0.9.2",
     "grunt-contrib-nodeunit": "0.3.3",
-    "nock": "^0.28.2"
+    "nock": "0.28.2",
+    "sinon": "1.9.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.0"

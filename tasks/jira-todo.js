@@ -10,16 +10,13 @@
 
 var _ = require('lodash'),
     util = require('util'),
-    JiraTodo = require('./jira-todo-lib');
+    JiraTodo = require('./lib/jira-todo-lib');
 
 module.exports = function (grunt) {
     grunt.registerMultiTask('jira-todo', 'Check statuses of TODOs referencing Jira tasks.', function () {
-        var done = this.async();
-
-        // Merge task-specific and/or target-specific options with these defaults.
-        var options = this.options({
+        var done = this.async(),
+            options = this.options({
                 projects: [],
-                regex: 'todo:?\\s*(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))',
                 allowedStatuses: [1]
             }),
             gjt = new JiraTodo(grunt, {
