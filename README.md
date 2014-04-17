@@ -1,9 +1,9 @@
-# grunt-jira-todo
+# grunt-jira-todo 0.1.0
 
-> Check statuses of TODOs referencing Jira tasks.
+> Check statuses of TODOs referencing Jira tasks. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses). 
 
 ## Getting Started
-This plugin requires Grunt `~0.4.4`
+This plugin requires Grunt `~0.4.0`
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
@@ -17,14 +17,14 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-jira-todo');
 ```
 
-## The "jira_todo" task
+## The "jira-todo" task
 
 ### Overview
-In your project's Gruntfile, add a section named `jira_todo` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `jira-todo` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  jira_todo: {
+  'jira-todo': {
     options: {
       // Task-specific options go here.
     },
@@ -37,17 +37,41 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### options.projects
+Type: `Array`  
+Default value: `[]`
 
-A string value that is used to do something with whatever.
+An array of strings specifying the keys of Jira projects you want to check against. For example, if your application is referencing the issues `MA-123` and `PT-99`, set this to `['MA', 'PT']`. Any other issue keys (e.g. `ABC-42`) will be ignored.
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
+#### options.allowedStatuses
+Type: `Array`  
+Default value: `[1]`
 
-A string value that is used to do something else with whatever else.
+An array of ids that specifies which statuses are allowed for issues that are referenced from a todo. The default `1` corresponds to the standard Jira issue status `Open`.
+
+#### options.regex
+Type: `String`  
+Default value: `'todo:?\\s*(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'`
+
+By default this plugin matches issue keys that are preceded by `"todo"` followed by an optional colon and whitespace(s), ignoring case. You can tweak this expression as needed, as long as you keep the named groups `key`, `project` and `number`.  The flags `g` (global) and `i` (ignore case) are added automatically. Please refer to the [XRegExp](http://xregexp.com/) documentation for further details.
+
+#### options.jiraUrl
+Type: `String`  
+Default value: _none_
+
+The URL of the Jira server, e.g. `'https://jira.example.com'`. The path for the REST endpoint (i.e. `'/rest/api/2'`) will be added automatically.
+
+#### options.jiraUsername
+Type: `String`  
+Default value: _none_
+
+The username used for HTTP basic access authentication.
+
+#### options.jiraPassword
+Type: `String`  
+Default value: _none_
+
+The password used for HTTP basic access authentication.
 
 ### Usage Examples
 
@@ -55,35 +79,45 @@ A string value that is used to do something else with whatever else.
 In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
 
 ```js
-grunt.initConfig({
-  jira_todo: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
+'jira-todo': {
+    source: {
+        options: {
+            projects: ['PM'],
+            allowedStatuses: [1, 3, 10023, 10024],
+            jiraUrl: 'https://jira.example.com',
+            jiraUsername: 'myusername',
+            jiraPassword: 'mypassword' // (see Security Notes below!)
+        },
+        src: ['src/**/*.js']
+    }
+}
 ```
 
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+## Security Notes
+It is strongly recommended not to put your Jira credentials in the Gruntfile. Instead, create a separate JSON file, add it to your `.gitignore` and read the username and password from that:
 
 ```js
 grunt.initConfig({
-  jira_todo: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+    jiraConfig: grunt.file.readJSON('jira-config.json'),
+    // ...
+    'jira-todo': {
+        source: {
+            options: {
+                projects: ['ABC', 'DEF'],
+                allowedStatuses: [1, 3],
+                jiraUrl: 'http://jira.example.com',  // you may even want to hide that as well
+                jiraUsername: '<%= jiraConfig.username %>',
+                jiraPassword: '<%= jiraConfig.password %>'
+            },
+            src: ['src/**/*.js']
+        }
+    }
 });
 ```
+
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+ * 2014-04-17   v0.1.0   Initial release.

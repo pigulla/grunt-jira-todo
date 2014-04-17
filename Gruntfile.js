@@ -30,13 +30,14 @@ module.exports = function (grunt) {
         },
 
         // Configuration to be run (and then tested).
-        jira_todo: {
+        'jira-todo': {
             default_options: {
                 options: {
+                    projects: ['ABC']
                 },
-//                files: {
-//                    'tmp/default_options': ['test/fixtures/testing.js']
-//                }
+                files: {
+                    'tmp/default_options': ['test/fixtures/testing.js']
+                }
             },
             custom_options: {
                 options: {
@@ -47,6 +48,16 @@ module.exports = function (grunt) {
                     jiraPassword: '<%= jiraConfig.password %>'
                 },
                 src: ['test/fixtures/testing.js']
+            },
+            tuerue: {
+                options: {
+                    projects: ['PM'],
+                    allowedStatuses: [1, 3, 10023, 10024],
+                    jiraUrl: '<%= jiraConfig.url %>',
+                    jiraUsername: '<%= jiraConfig.username %>',
+                    jiraPassword: '<%= jiraConfig.password %>'
+                },
+                src: ['/home/pigullar/workspaces/tuerue/frontend/www/js/tuerue/**/*.js']
             }
         },
 
@@ -66,7 +77,7 @@ module.exports = function (grunt) {
 
     // Whenever the "test" task is run, first clean the "tmp" dir, then run this
     // plugin's task(s), then test the result.
-    grunt.registerTask('test', ['clean', 'jira_todo', 'nodeunit']);
+    grunt.registerTask('test', ['clean', 'jira-todo', 'nodeunit']);
 
     // By default, lint and run all tests.
     grunt.registerTask('default', ['jshint', 'test']);

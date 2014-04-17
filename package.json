@@ -27,25 +27,27 @@
   "scripts": {
     "test": "grunt test"
   },
-    "dependencies": {
-        "async": "^0.7.0",
-        "esprima": "^1.1.1",
-        "estraverse": "^1.5.0",
-        "lodash": "^2.4.1",
-        "request": "^2.34.0",
-        "winston": "^0.7.3",
-        "xregexp": "^2.0.0"
-    },
+  "dependencies": {
+    "async": "0.7.0",
+    "esprima": "1.1.1",
+    "estraverse": "1.5.0",
+    "lodash": "2.4.1",
+    "request": "2.34.0",
+    "xregexp": "2.0.0"
+  },
   "devDependencies": {
-    "grunt-contrib-jshint": "^0.9.2",
-    "grunt-contrib-clean": "^0.5.0",
-    "grunt-contrib-nodeunit": "^0.3.3",
-    "grunt": "~0.4.4"
+    "grunt": "~0.4.0",
+    "grunt-contrib-clean": "0.5.0",
+    "grunt-contrib-jshint": "0.9.2",
+    "grunt-contrib-nodeunit": "0.3.3",
+    "nock": "^0.28.2"
   },
   "peerDependencies": {
-    "grunt": "~0.4.4"
+    "grunt": "~0.4.0"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin",
+    "jira",
+    "todos"
   ]
 }
