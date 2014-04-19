@@ -33,33 +33,15 @@ module.exports = function (grunt) {
         },
 
         'jira-todo': {
-            default_options: {
-                options: {
-                    projects: ['ABC']
-                },
-                files: {
-                    'tmp/default_options': ['test/fixtures/testing.js']
-                }
-            },
             custom_options: {
                 options: {
-                    projects: ['PM'],
-                    allowedStatuses: [1, 3, 10023, 10024],
+                    projects: ['ABC'],
+                    allowedStatuses: [1, 3],
                     jiraUrl: '<%= jiraConfig.url %>',
                     jiraUsername: '<%= jiraConfig.username %>',
                     jiraPassword: '<%= jiraConfig.password %>'
                 },
                 src: ['test/fixtures/testing.js']
-            },
-            tuerue: {
-                options: {
-                    projects: ['PM'],
-                    allowedStatuses: [1, 3, 10023, 10024],
-                    jiraUrl: '<%= jiraConfig.url %>',
-                    jiraUsername: '<%= jiraConfig.username %>',
-                    jiraPassword: '<%= jiraConfig.password %>'
-                },
-                src: ['/home/pigullar/workspaces/tuerue/frontend/www/js/tuerue/**/*.js']
             }
         }
     });

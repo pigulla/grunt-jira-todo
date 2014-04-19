@@ -114,7 +114,7 @@ JiraTodo.prototype.getJiraStatusForIssues = function (issueKeys, callback) {
         }, function (err, response, body) {
             if (err) {
                 this.grunt.fail.warn(util.format(
-                    'Error retrieving status for %s: "%s"',
+                    'Error retrieving status for issue "%s": "%s"',
                     issueKey, err.toString()
                 ));
                 return cb();
@@ -122,8 +122,8 @@ JiraTodo.prototype.getJiraStatusForIssues = function (issueKeys, callback) {
 
             if (response.statusCode >= 400) {
                 this.grunt.fail.warn(util.format(
-                    'Request to Jira failed with status code %d.',
-                    response.statusCode
+                    'Request to Jira for issue "%s" failed with status code %d.',
+                    issueKey, response.statusCode
                 ));
                 return cb();
             }
@@ -133,13 +133,17 @@ JiraTodo.prototype.getJiraStatusForIssues = function (issueKeys, callback) {
             try {
                 data = JSON.parse(body);
             } catch (e) {
-                this.grunt.fail.warn(util.format('Error parsing JSON response: "%s"', e.message));
+                this.grunt.fail.warn(util.format(
+                    'Error parsing JSON response for issue "%s": "%s"',
+                    issueKey, e.message
+                ));
                 return cb();
             }
 
             if (data.errorMessages) {
                 this.grunt.fail.warn(util.format(
-                    'Error getting status for %s: "%s"', issueKey, data.errorMessages[0]
+                    'Error getting status for issue "%s": "%s"',
+                    issueKey, data.errorMessages[0]
                 ));
                 return cb();
             }
