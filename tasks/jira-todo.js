@@ -30,26 +30,14 @@ module.exports = function (grunt) {
                 }
             });
 
-        var issues = this.filesSrc.reduce(function (list, file) {
-                return list.concat(gjt.processFile(file));
-            }, []),
-            uniqIssueKeys = _.uniq(issues.map(function (issue) {
-                return issue.key;
-            }));
-
-        gjt.getJiraStatusForIssues(uniqIssueKeys, function (err, statuses) {
-            issues.forEach(function (issue) {
-                var status = statuses[issue.key];
-                if (status !== null && options.allowedStatuses.indexOf(status.id) === -1) {
-                    grunt.fail.warn(util.format(
-                        'File "%s" has a todo for issue %s (issue status: "%s")',
-                        issue.file, issue.key, status.name
-                    ));
-                }
+        gjt.processFiles(this.filesSrc, function (problems) {
+            problems.forEach(function (problem) {
+                grunt.fail.warn(util.format(
+                    'File "%s" has a todo for issue %s (issue status: "%s")',
+                    problem.issue.file, problem.issue.key, problem.status.name
+                ));
             });
-
             done(true);
         });
     });
-
 };

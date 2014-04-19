@@ -1,13 +1,11 @@
 var config = module.exports;
 
-config["My tests"] = {
-    rootPath: "../",
-    environment: "browser", // or "node"
+config['grunt-jira-todo'] = {
+    rootPath: '.',
+    environment: 'node',
     sources: [
-        "lib/mylib.js",
-        "lib/**/*.js"
     ],
     tests: [
-        "test/*-test.js"
+        '*-test.js'
     ]
 };

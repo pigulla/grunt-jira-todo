@@ -7,23 +7,42 @@ var _ = require('lodash'),
     esprima = require('esprima'),
     estraverse = require('estraverse'),
     request = require('request'),
-    XRegExp = require('xregexp').XRegExp;
+    xregexp = require('xregexp').XRegExp;
 
 function JiraTodo(grunt, options) {
     _.defaults(options, {
         regex: 'todo:?\\s*(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'
     });
-    
+
     this.grunt = grunt;
     this.opts = options;
-    this.regex = XRegExp(options.regex, 'gi');
+    this.regex = xregexp(options.regex, 'gi');
 
     if (!this.opts.projects || !this.opts.projects.length) {
         this.grunt.log.warn('You have not specified any projects.');
     }
 }
 
-JiraTodo.prototype.processFile = function (file) {
+JiraTodo.prototype.processFiles = function (files, callback) {
+    var self = this,
+        issues = files.reduce(function (list, file) {
+            return list.concat(self.getIssuesForFile(file));
+        }, []),
+        issueKeys = _.pluck(issues, 'key');
+
+    this.getJiraStatusForIssues(issueKeys, function (err, statuses) {
+        var problems = [];
+        issues.forEach(function (issue) {
+            var status = statuses[issue.key];
+            if (status !== null && self.opts.allowedStatuses.indexOf(status.id) === -1) {
+                problems.push({ issue: issue, status: status });
+            }
+        });
+        callback(problems);
+    });
+};
+
+JiraTodo.prototype.getIssuesForFile = function (file) {
     this.grunt.verbose.writeln('Processing file ' + file);
 
     var issues = this.extractTodosFromFile(file),
@@ -65,7 +84,7 @@ JiraTodo.prototype.extractTodosFromFile = function (file) {
 JiraTodo.prototype.parseString = function (string) {
     var result = [];
 
-    XRegExp.forEach(string, this.regex, function (matches) {
+    xregexp.forEach(string, this.regex, function (matches) {
         result.push({
             key: matches.key,
             project: matches.project,
@@ -79,7 +98,7 @@ JiraTodo.prototype.parseString = function (string) {
 JiraTodo.prototype.getJiraStatusForIssues = function (issueKeys, callback) {
     var result = {};
 
-    async.eachLimit(issueKeys, 3, function (issueKey, cb) {
+    async.eachLimit(_.uniq(issueKeys), 3, function (issueKey, cb) {
         var url = this.opts.jira.url + '/rest/api/2/issue/' + issueKey;
 
         this.grunt.verbose.writeln('Sending request to ' + url);
