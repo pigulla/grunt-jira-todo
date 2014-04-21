@@ -38,45 +38,42 @@ grunt.initConfig({
 ### Options
 
 #### options.projects
-Type: `Array`
+Type: `Array`  
 Default value: `[]`
 
 An array of strings specifying the keys of Jira projects you want to check against. For example, if your application is referencing the issues `MA-123` and `PT-99`, set this to `['MA', 'PT']`. Any other issue keys (e.g. `ABC-42`) will be ignored.
 
 #### options.allowedStatuses
-Type: `Array`
+Type: `Array`  
 Default value: `[1]`
 
 An array of ids that specifies which statuses are allowed for issues that are referenced from a todo. The default `1` corresponds to the standard Jira issue status `Open`.
 
 #### options.regex
-Type: `String`
+Type: `String`  
 Default value: `'todo:?\\s*(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'`
 
 By default this plugin matches issue keys that are preceded by `"todo"` followed by an optional colon and whitespace(s), ignoring case. You can tweak this expression as needed, as long as you keep the named groups `key`, `project` and `number`.  The flags `g` (global) and `i` (ignore case) are added automatically. Please refer to the [XRegExp](http://xregexp.com/) documentation for further details.
 
 #### options.jiraUrl
-Type: `String`
+Type: `String`  
 Default value: _none_
 
 The URL of the Jira server, e.g. `'https://jira.example.com'`. The path for the REST endpoint (i.e. `'/rest/api/2'`) will be added automatically.
 
 #### options.jiraUsername
-Type: `String`
+Type: `String`  
 Default value: _none_
 
 The username used for HTTP basic access authentication.
 
 #### options.jiraPassword
-Type: `String`
+Type: `String`  
 Default value: _none_
 
 The password used for HTTP basic access authentication.
 
 ### Usage Examples
-
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
 
 ```js
 'jira-todo': {
