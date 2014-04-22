@@ -74,7 +74,6 @@ Default value: _none_
 The password used for HTTP basic access authentication.
 
 ### Usage Examples
-
 ```js
 'jira-todo': {
     source: {
@@ -91,7 +90,7 @@ The password used for HTTP basic access authentication.
 ```
 
 ## Security Notes
-It is strongly recommended not to put your Jira credentials in the Gruntfile. Instead, create a separate JSON file, add it to your `.gitignore` and read the username and password from that:
+It is strongly recommended not to put your Jira credentials in the Gruntfile. Instead, create a separate JSON file, add it to your `.gitignore` and read the username and password from there:
 
 ```js
 grunt.initConfig({
@@ -114,8 +113,8 @@ grunt.initConfig({
 
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+In lieu of a formal style guide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
- * 2014-04-22   v0.1.1   fixed minor issues with the README and Grunt tasks, changelog added 
+ * 2014-04-22   v0.1.1   Fixed minor issues with the README and Grunt tasks, changelog added.
  * 2014-04-19   v0.1.0   Initial release.
