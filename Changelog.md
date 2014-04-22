@@ -1,6 +1,6 @@
 # Changelog
 
-#### v0.1.1 (tbd)
+#### v0.1.1 (2014-04-22)
  - added changelog
  - fixed minor issues in the README
  - fixed jshint Grunt task

@@ -1,4 +1,4 @@
-# grunt-jira-todo 0.1.0
+# grunt-jira-todo 0.1.1
 
 > Check statuses of TODOs referencing Jira tasks. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
 
@@ -117,4 +117,5 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+ * 2014-04-22   v0.1.1   fixed minor issues with the README and Grunt tasks, changelog added 
  * 2014-04-19   v0.1.0   Initial release.
