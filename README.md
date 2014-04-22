@@ -1,6 +1,6 @@
 # grunt-jira-todo 0.1.1
 
-> Check statuses of TODOs referencing Jira tasks. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
+> Check your JavaScript source files for comments containing TODOs that reference Jira issues. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
 
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
@@ -101,7 +101,7 @@ grunt.initConfig({
             options: {
                 projects: ['ABC', 'DEF'],
                 allowedStatuses: [1, 3],
-                jiraUrl: 'http://jira.example.com',  // you may even want to hide that as well
+                jiraUrl: 'https://jira.example.com',  // you may even want to hide that as well
                 jiraUsername: '<%= jiraConfig.username %>',
                 jiraPassword: '<%= jiraConfig.password %>'
             },
@@ -110,11 +110,12 @@ grunt.initConfig({
     }
 });
 ```
-
+Also, make sure you use a secure connection (i.e. https) to protect your username and password.  
 
 ## Contributing
 In lieu of a formal style guide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+ * 2014-??   v0.1.2   Improved error handling for configuration, source code documentation.
  * 2014-04-22   v0.1.1   Fixed minor issues with the README and Grunt tasks, changelog added.
  * 2014-04-19   v0.1.0   Initial release.
