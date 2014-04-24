@@ -11,7 +11,7 @@
 module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
-        jiraConfig: grunt.file.readJSON('jira-config.json'),
+        jiraConfig: grunt.file.readJSON('jira-config.example.json'),
 
         jshint: {
             all: [
@@ -33,7 +33,7 @@ module.exports = function (grunt) {
         },
 
         'jira-todo': {
-            custom_options: {
+            project: {
                 options: {
                     projects: ['ABC'],
                     allowedStatuses: [1, 3],
