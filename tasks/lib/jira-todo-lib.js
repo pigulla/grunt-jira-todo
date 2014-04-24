@@ -62,7 +62,7 @@ JiraTodo.prototype.processFiles = function (filenames, callback) {
  * Returns all issues referenced in the given file.
  * 
  * @param {string} filename
- * @return {Array|*}
+ * @return {Array.<Object>}
  */
 JiraTodo.prototype.getIssuesForFile = function (filename) {
     this.grunt.verbose.writeln('Processing file ' + filename);
@@ -140,17 +140,17 @@ JiraTodo.prototype.getJiraStatusForIssues = function (issueKeys, callback) {
         self = this;
 
     async.eachLimit(_.uniq(issueKeys), 3, function (issueKey, cb) {
-        var url = this.opts.jira.url + '/rest/api/2/issue/' + issueKey;
+        var url = self.opts.jira.url + '/rest/api/2/issue/' + issueKey;
 
-        this.grunt.verbose.writeln('Sending request to ' + url);
+        self.grunt.verbose.writeln('Sending request to ' + url);
         result[issueKey] = null;
 
         request({
             url: url,
             method: 'GET',
             auth: {
-                username: this.opts.jira.username,
-                password: this.opts.jira.password
+                username: self.opts.jira.username,
+                password: self.opts.jira.password
             }
         }, function (err, response, body) {
             var data;
