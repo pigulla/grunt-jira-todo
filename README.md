@@ -3,7 +3,7 @@
 > Check your JavaScript source files for comments containing TODOs that reference Jira issues. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
 
 ## Example Output
-![Image](../master/screenshot.png?raw=true)
+![Example Output](https://raw.githubusercontent.com/pigulla/grunt-jira-todo/master/screenshot.png)
 
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
