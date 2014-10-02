@@ -17,7 +17,7 @@ var _ = require('lodash'),
  */
 function JiraTodo(grunt, options) {
     _.defaults(options, {
-        regex: 'todo:?\\s*(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'
+        regex: 'todo(?::|\\s).*?(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'
     });
 
     this.grunt = grunt;
@@ -30,7 +30,7 @@ function JiraTodo(grunt, options) {
 }
 
 /**
- * Processes the list of files, extracts the todos, retreives their status and returns any problems that were found.
+ * Processes the list of files, extracts the todos, retrieves their status and returns any problems that were found.
  * Please note that the callback is not a Node-style callback since it will never fail. Any errors that are encountered
  * are handled through grunt.fail.warn() calls.
  * 

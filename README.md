@@ -1,4 +1,8 @@
-# grunt-jira-todo 0.1.2
+[![NPM version](http://img.shields.io/npm/v/grunt-jira-todo.svg?style=flat-square)](http://badge.fury.io/js/grunt-jira-todo)
+[![Dependency Status](https://david-dm.org/pigulla/grunt-jira-todo.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo)
+[![devDependency Status](https://david-dm.org/pigulla/grunt-jira-todo/dev-status.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo#info=devDependencies)
+
+# grunt-jira-todo 0.1.3
 
 > Check your JavaScript source files for comments containing TODOs that reference Jira issues. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
 
@@ -119,6 +123,7 @@ Also, make sure you use a secure connection (i.e. https) to protect your usernam
 In lieu of a formal style guide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+ * 2014-10-02   v0.1.3   Improved regex and bumped dependency versions.
  * 2014-04-24   v0.1.2   Improved error handling for configuration and source code documentation.
  * 2014-04-22   v0.1.1   Fixed minor issues with the README and Grunt tasks, changelog added.
  * 2014-04-19   v0.1.0   Initial release.

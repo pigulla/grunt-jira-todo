@@ -20,7 +20,8 @@ describe('grunt-jira-todo', function () {
 
     it('extracts issues for a custom regex', function () {
         var gjt = new JiraTodo(gruntMock, {
-                regex: '<<(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))>>'
+                regex: '<<(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))>>',
+                projects: []
             }),
             source = 'foo <<ABC-99>> bar <XY-0> baz <<FOOBAR-1337>>';
 

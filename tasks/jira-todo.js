@@ -37,15 +37,15 @@ module.exports = function (grunt) {
         validateOptions(options);
         
         gjt = new JiraTodo(grunt, {
-                projects: options.projects,
-                regex: options.regex,
-                allowedStatuses: options.allowedStatuses,
-                jira: {
-                    url: options.jiraUrl,
-                    username: options.jiraUsername,
-                    password: options.jiraPassword
-                }
-            });
+            projects: options.projects,
+            regex: options.regex,
+            allowedStatuses: options.allowedStatuses,
+            jira: {
+                url: options.jiraUrl,
+                username: options.jiraUsername,
+                password: options.jiraPassword
+            }
+        });
 
         gjt.processFiles(this.filesSrc, function (problems) {
             problems.forEach(function (problem) {

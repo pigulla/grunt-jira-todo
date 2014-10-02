@@ -3,4 +3,5 @@ node_modules
 npm-debug.log
 tmp
 project
+jira-config.json
 Gruntfile.project.js
