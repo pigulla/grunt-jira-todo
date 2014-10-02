@@ -58,9 +58,9 @@ An array of ids that specifies which statuses are allowed for issues that are re
 
 #### options.regex
 Type: `String`  
-Default value: `'todo:?\\s*(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'`
+Default value: `'todo(?::|\\s).*?(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'`
 
-By default this plugin matches issue keys that are preceded by `"todo"` followed by an optional colon and whitespace(s), ignoring case. You can tweak this expression as needed, as long as you keep the named groups `key`, `project` and `number`.  The flags `g` (global) and `i` (ignore case) are added automatically. Please refer to the [XRegExp](http://xregexp.com/) documentation for further details.
+By default this plugin matches issue keys that are preceded by `"todo"` followed by a colon or whitespace, ignoring case. You can tweak this expression as needed, as long as you keep the named groups `key`, `project` and `number`.  The flags `g` (global) and `i` (ignore case) are added automatically. Please refer to the [XRegExp](http://xregexp.com/) documentation for further details.
 
 #### options.jiraUrl
 Type: `String`  
