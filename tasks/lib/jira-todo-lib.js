@@ -4,8 +4,8 @@ var util = require('util');
 
 var _ = require('lodash'),
     async = require('async'),
-    esprima = require('esprima'),
-    estraverse = require('estraverse'),
+    esprima = require('esprima-fb'),
+    estraverse = require('estraverse-fb'),
     request = require('request'),
     xregexp = require('xregexp').XRegExp;
 

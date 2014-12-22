@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/pigulla/grunt-jira-todo.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo)
 [![devDependency Status](https://david-dm.org/pigulla/grunt-jira-todo/dev-status.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo#info=devDependencies)
 
-# grunt-jira-todo 0.1.5
+# grunt-jira-todo 0.2.0
 
 > Check your JavaScript source files for comments containing TODOs that reference Jira issues. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
 
@@ -135,7 +135,7 @@ Also, make sure you use a secure connection (i.e. https) to protect your usernam
 In lieu of a formal style guide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
- * 2014-12-22   v0.2.0   Added `issueRequired` option.
+ * 2014-12-22   v0.2.0   Added `issueRequired` option and JSX support.
  * 2014-11-28   v0.1.4   Maintenance release.
  * 2014-10-02   v0.1.3   Improved regex and bumped dependency versions.
  * 2014-04-24   v0.1.2   Improved error handling for configuration and source code documentation.

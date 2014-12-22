@@ -61,7 +61,7 @@ module.exports = function (grunt) {
 
         gjt.processFiles(this.filesSrc, function (problems) {
             problems.forEach(function (problem) {
-                if (problems.hasOwnProperty('key')) {
+                if (problem.issue.hasOwnProperty('key')) {
                     grunt.fail.warn(util.format(
                         'File "%s" has a todo for issue %s (issue status: "%s").',
                         problem.issue.file, problem.issue.key, problem.status.name
@@ -69,7 +69,7 @@ module.exports = function (grunt) {
                 } else if (options.issueRequired) {
                     grunt.fail.warn(util.format(
                         'File "%s" has a todo without a specified issue near "%s".',
-                        problem.issue.file, problem.issue.source.substr(0, 25)
+                        problem.issue.file, problem.issue.source.trim().substr(0, 25)
                     ));
                 }
             });

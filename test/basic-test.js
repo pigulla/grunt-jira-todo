@@ -133,6 +133,106 @@ describe('grunt-jira-todo', function () {
         });
     });
 
+    describe('extracts issues from a jsx file', function () {
+        var sourceFile = 'mysource.jsx',
+            actualSource = fs.readFileSync(path.join(__dirname, 'fixtures', 'testing.jsx')).toString();
+
+        before(function () {
+            gruntMock.file.read.withArgs(sourceFile).returns(actualSource);
+        });
+
+        it('and handles issueless todos', function () {
+            var gjt = new JiraTodo(gruntMock, {
+                    projects: ['FOO']
+                }),
+                issues = gjt.getIssuesForFile(sourceFile);
+
+            expect(issues).toEqual({
+                incomplete: [{
+                    file: sourceFile,
+                    source: ' TODO: give this method a proper name!'
+                }],
+                issues: []
+            });
+        });
+
+        it('for one project', function () {
+            var gjt = new JiraTodo(gruntMock, {
+                    projects: ['PM']
+                }),
+                issues = gjt.getIssuesForFile(sourceFile);
+
+            expect(issues).toMatch({
+                incomplete: [{
+                    file: sourceFile,
+                    source: ' TODO: give this method a proper name!'
+                }],
+                issues: [{
+                    key: 'PM-1234',
+                    project: 'PM',
+                    number: 1234,
+                    file: sourceFile,
+                    source: sinon.match.string
+                }, {
+                    key: 'PM-42',
+                    project: 'PM',
+                    number: 42,
+                    file: sourceFile,
+                    source: sinon.match.string
+                }]
+            });
+        });
+
+        it('for multiple projects', function () {
+            var gjt = new JiraTodo(gruntMock, {
+                    projects: ['PM', 'ABC']
+                }),
+                issues = gjt.getIssuesForFile(sourceFile);
+
+            expect(issues).toMatch({
+                incomplete: [{
+                    file: sourceFile,
+                    source: ' TODO: give this method a proper name!'
+                }],
+                issues: [{
+                    key: 'PM-1234',
+                    project: 'PM',
+                    number: 1234,
+                    file: sourceFile,
+                    source: sinon.match.string
+                },
+                {
+                    key: 'PM-42',
+                    project: 'PM',
+                    number: 42,
+                    file: sourceFile,
+                    source: sinon.match.string
+                },
+                {
+                    key: 'ABC-13',
+                    project: 'ABC',
+                    number: 13,
+                    file: sourceFile,
+                    source: sinon.match.string
+                },
+                {
+                    key: 'ABC-99',
+                    project: 'ABC',
+                    number: 99,
+                    file: sourceFile,
+                    source: sinon.match.string
+                },
+                {
+                    key: 'ABC-99',
+                    project: 'ABC',
+                    number: 99,
+                    file: sourceFile,
+                    source: sinon.match.string
+                }]
+            });
+        });
+    });
+
     it('generates the right requests', function (done) {
         var authHeader = 'Basic ' + new Buffer('jiraUser:jiraPass').toString('base64'),
             gjt = new JiraTodo(gruntMock, {
