@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/pigulla/grunt-jira-todo.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo)
 [![devDependency Status](https://david-dm.org/pigulla/grunt-jira-todo/dev-status.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo#info=devDependencies)
 
-# grunt-jira-todo 0.1.4
+# grunt-jira-todo 0.1.5
 
 > Check your JavaScript source files for comments containing TODOs that reference Jira issues. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
 
@@ -56,11 +56,23 @@ Default value: `[1]`
 
 An array of ids that specifies which statuses are allowed for issues that are referenced from a todo. The default `1` corresponds to the standard Jira issue status `Open`.
 
-#### options.regex
-Type: `String`  
-Default value: `'todo(?::|\\s).*?(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'`
+#### options.issueRequired
+Type: `boolean`
+Default value: `false`
 
-By default this plugin matches issue keys that are preceded by `"todo"` followed by a colon or whitespace, ignoring case. You can tweak this expression as needed, as long as you keep the named groups `key`, `project` and `number`.  The flags `g` (global) and `i` (ignore case) are added automatically. Please refer to the [XRegExp](http://xregexp.com/) documentation for further details.
+If enabled, all comments that match `opts.todoRegex` *must* contain at least one issue key matching the specified project(s).
+
+#### options.issueRegex
+Type: `String`  
+Default value: `'(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'`
+
+The regular expression used to identify issue keys. By default this plugin matches strings that starts with a letter, followed by any number of alphanumeric characters, a dash and at least one digit (ignoring case). You can tweak this expression as needed, as long as you keep the named groups `key`, `project` and `number`.  The flags `g` (global) and `i` (ignore case) are added automatically. Please refer to the [XRegExp](http://xregexp.com/) documentation for further details.
+
+#### options.todoRegex
+Type: `String`  
+Default value: `'(?:\\*|\\s)(todo|fixme)(?:!|:|\\s)(?<text>.+)'`
+
+The regular expression used to find lines that potentially contain issue keys to check. By default this plugin matches anything that is preceded by either `"todo"` or `"fixme"` (ignoring case) followed by a colon, whitespace or exclamation mark. You can tweak this expression as needed, as long as you keep the named group `text`. The flags `g` (global) and `i` (ignore case) are added automatically. Please refer to the [XRegExp](http://xregexp.com/) documentation for further details.
 
 #### options.jiraUrl
 Type: `String`  
@@ -123,6 +135,7 @@ Also, make sure you use a secure connection (i.e. https) to protect your usernam
 In lieu of a formal style guide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+ * 2014-12-22   v0.2.0   Added `issueRequired` option.
  * 2014-11-28   v0.1.4   Maintenance release.
  * 2014-10-02   v0.1.3   Improved regex and bumped dependency versions.
  * 2014-04-24   v0.1.2   Improved error handling for configuration and source code documentation.

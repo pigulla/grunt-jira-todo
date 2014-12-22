@@ -9,6 +9,9 @@ var _ = require('lodash'),
     request = require('request'),
     xregexp = require('xregexp').XRegExp;
 
+var TODO_REGEX = '(?:\\*|\\s)(todo|fixme)(?:!|:|\\s)(?<text>.+)',
+    ISSUE_REGEX = '(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))';
+
 /**
  * @constructor
  * @class JiraTodo
@@ -17,12 +20,14 @@ var _ = require('lodash'),
  */
 function JiraTodo(grunt, options) {
     _.defaults(options, {
-        regex: 'todo(?::|\\s).*?(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))'
+        todoRegex: TODO_REGEX,
+        issueRegex: ISSUE_REGEX
     });
 
     this.grunt = grunt;
     this.opts = options;
-    this.regex = xregexp(options.regex, 'gi');
+    this.todoRegex = xregexp(options.todoRegex, 'gi');
+    this.issueRegex = xregexp(options.issueRegex, 'gi');
 
     if (this.opts.projects.length === 0) {
         this.grunt.log.warn('You have not specified any projects.');
@@ -39,15 +44,22 @@ function JiraTodo(grunt, options) {
  */
 JiraTodo.prototype.processFiles = function (filenames, callback) {
     var self = this,
-        issues = filenames.reduce(function (list, file) {
-            return list.concat(self.getIssuesForFile(file));
-        }, []),
-        issueKeys = _.pluck(issues, 'key');
+        allIssues = [],
+        problems = [];
 
-    this.getJiraStatusForIssues(issueKeys, function (err, statuses) {
-        var problems = [];
-        
-        issues.forEach(function (issue) {
+    filenames.forEach(function (file) {
+        var issuesFound = this.getIssuesForFile(file);
+
+        issuesFound.incomplete.forEach(function (issue) {
+            problems.push({ issue: issue });
+        });
+
+        [].push.apply(allIssues, issuesFound.issues);
+    }, this);
+
+
+    this.getJiraStatusForIssues(_.pluck(allIssues, 'key'), function (err, statuses) {
+        allIssues.forEach(function (issue) {
             var status = statuses[issue.key];
             if (status !== null && self.opts.allowedStatuses.indexOf(status.id) === -1) {
                 problems.push({ issue: issue, status: status });
@@ -62,22 +74,28 @@ JiraTodo.prototype.processFiles = function (filenames, callback) {
  * Returns all issues referenced in the given file.
  * 
  * @param {string} filename
- * @return {Array.<Object>}
+ * @return {Object}
  */
 JiraTodo.prototype.getIssuesForFile = function (filename) {
     this.grunt.verbose.writeln('Processing file ' + filename);
 
     var issues = this.extractTodosFromFile(filename),
+        incompleteTodos = issues.filter(function (issue) {
+            return !issue.hasOwnProperty('key');
+        }, this),
         relevantIssues = issues.filter(function (issue) {
-            return this.opts.projects.indexOf(issue.project) !== -1;
-        }.bind(this));
+            return issue.hasOwnProperty('key') && this.opts.projects.indexOf(issue.project) !== -1;
+        }, this);
 
     this.grunt.verbose.writeln(util.format(
         'File %s has %d todos with issues of which %d belonged to configured projects.',
         filename, issues.length, relevantIssues.length
     ));
 
-    return relevantIssues;
+    return {
+        issues: relevantIssues,
+        incomplete: incompleteTodos
+    };
 };
 
 /**
@@ -99,7 +117,8 @@ JiraTodo.prototype.extractTodosFromFile = function (filename) {
             (node.comments || []).forEach(function (commentNode) {
                 self.parseString(commentNode.value).forEach(function (issue) {
                     result.push(_.extend(issue, {
-                        file: filename
+                        file: filename,
+                        source: commentNode.value
                     }));
                 });
             });
@@ -118,13 +137,19 @@ JiraTodo.prototype.extractTodosFromFile = function (filename) {
 JiraTodo.prototype.parseString = function (string) {
     var result = [];
 
-    xregexp.forEach(string, this.regex, function (matches) {
-        result.push({
-            key: matches.key,
-            project: matches.project,
-            number: parseInt(matches.number, 10)
+    xregexp.forEach(string, this.todoRegex, function (todoMatches) {
+        var referencedIssues = [];
+
+        xregexp.forEach(todoMatches.text, this.issueRegex, function (issueMatches) {
+            referencedIssues.push({
+                key: issueMatches.key,
+                project: issueMatches.project,
+                number: parseInt(issueMatches.number, 10)
+            });
         });
-    });
+
+        [].push.apply(result, referencedIssues.length ? referencedIssues : [{}]);
+    }, this);
 
     return result;
 };

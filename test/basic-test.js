@@ -18,12 +18,14 @@ describe('grunt-jira-todo', function () {
         }
     };
 
+
     it('extracts issues for a custom regex', function () {
         var gjt = new JiraTodo(gruntMock, {
-                regex: '<<(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))>>',
+                todoRegex: 'BEWARE!\\s(?<text>.+)',
+                issueRegex: '<<(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))>>',
                 projects: []
             }),
-            source = 'foo <<ABC-99>> bar <XY-0> baz <<FOOBAR-1337>>';
+            source = 'BEWARE! foo <<ABC-99>> bar <XY-0> baz <<FOOBAR-1337>>';
 
         expect(gjt.parseString(source)).toEqual([
             { key: 'ABC-99', project: 'ABC', number: 99 },
@@ -39,53 +41,95 @@ describe('grunt-jira-todo', function () {
             gruntMock.file.read.withArgs(sourceFile).returns(actualSource);
         });
 
+        it('and handles issueless todos', function () {
+            var gjt = new JiraTodo(gruntMock, {
+                    projects: ['FOO']
+                }),
+                issues = gjt.getIssuesForFile(sourceFile);
+
+            expect(issues).toEqual({
+                incomplete: [{
+                    file: sourceFile,
+                    source: ' TODO: give this method a proper name!'
+                }],
+                issues: []
+            });
+        });
+
         it('for one project', function () {
             var gjt = new JiraTodo(gruntMock, {
                     projects: ['PM']
                 }),
                 issues = gjt.getIssuesForFile(sourceFile);
 
-            expect(issues).toEqual([{
-                key: 'PM-1234',
-                project: 'PM',
-                number: 1234,
-                file: sourceFile
-            }]);
+            expect(issues).toMatch({
+                incomplete: [{
+                    file: sourceFile,
+                    source: ' TODO: give this method a proper name!'
+                }],
+                issues: [{
+                    key: 'PM-1234',
+                    project: 'PM',
+                    number: 1234,
+                    file: sourceFile,
+                    source: sinon.match.string
+                }, {
+                    key: 'PM-42',
+                    project: 'PM',
+                    number: 42,
+                    file: sourceFile,
+                    source: sinon.match.string
+                }]
+            });
         });
 
-
-        it('for multiple project', function () {
+        it('for multiple projects', function () {
             var gjt = new JiraTodo(gruntMock, {
                     projects: ['PM', 'ABC']
                 }),
                 issues = gjt.getIssuesForFile(sourceFile);
 
-            expect(issues).toEqual([
-                {
+            expect(issues).toMatch({
+                incomplete: [{
+                    file: sourceFile,
+                    source: ' TODO: give this method a proper name!'
+                }],
+                issues: [{
                     key: 'PM-1234',
                     project: 'PM',
                     number: 1234,
-                    file: sourceFile
+                    file: sourceFile,
+                    source: sinon.match.string
+                },
+                {
+                    key: 'PM-42',
+                    project: 'PM',
+                    number: 42,
+                    file: sourceFile,
+                    source: sinon.match.string
                 },
                 {
                     key: 'ABC-13',
                     project: 'ABC',
                     number: 13,
-                    file: sourceFile
+                    file: sourceFile,
+                    source: sinon.match.string
                 },
                 {
                     key: 'ABC-99',
                     project: 'ABC',
                     number: 99,
-                    file: sourceFile
+                    file: sourceFile,
+                    source: sinon.match.string
                 },
                 {
                     key: 'ABC-99',
                     project: 'ABC',
                     number: 99,
-                    file: sourceFile
-                }
-            ]);
+                    file: sourceFile,
+                    source: sinon.match.string
+                }]
+            });
         });
     });
 
@@ -137,11 +181,21 @@ describe('grunt-jira-todo', function () {
             .get('/rest/api/2/issue/ABC-99').reply(200, { fields: { status: { id: '1', name: 'Open' } } });
 
         gjt.processFiles([sourceFile], function (problems) {
-            expect(problems.length).toBe(1);
-            expect(problems[0]).toEqual({
-                issue: { key: 'ABC-13', project: 'ABC', number: 13, file: sourceFile },
+            expect(problems).toMatch([{
+                issue: {
+                    file: sourceFile,
+                    source: ' TODO: give this method a proper name!'
+                }
+            }, {
+                issue: {
+                    key: 'ABC-13',
+                    project: 'ABC',
+                    number: 13,
+                    file: sourceFile,
+                    source: sinon.match.string
+                },
                 status: { id: 6, name: 'Closed' }
-            });
+            }]);
             done();
         });
     });

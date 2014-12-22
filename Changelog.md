@@ -1,5 +1,8 @@
 # Changelog
 
+#### v0.2.0 (2014-??-??)
+ - added 'issueRequired' option
+
 #### v0.1.4 (2014-11-28)
  - maintenance release
 

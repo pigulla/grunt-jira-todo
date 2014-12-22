@@ -13,12 +13,22 @@ var util = require('util'),
 
 module.exports = function (grunt) {
     function validateOptions(options) {
+        if (typeof options.issueRequired !== 'boolean') {
+            grunt.fail.warn(util.format('Configuration option "%s" must be of type boolean.', 'issueRequired'));
+        }
+
+        ['todoRegex', 'issueRegex'].forEach(function (key) {
+            if (options.hasOwnProperty(key) && typeof options[key] !== 'string') {
+                grunt.fail.warn(util.format('Configuration option "%s" must be of type string.', key));
+            }
+        });
+        
         ['allowedStatuses', 'projects'].forEach(function (name) {
             if (!Array.isArray(options.projects)) {
                 grunt.fail.warn(util.format('Configuration option "%s" is missing or not an array.', name));
             }
         });
-        
+
         ['jiraUrl', 'jiraUsername', 'jiraPassword'].forEach(function (name) {
             if (!options.hasOwnProperty(name)) {
                 grunt.fail.warn(util.format('Configuration option "%s" is missing.', name));
@@ -30,7 +40,8 @@ module.exports = function (grunt) {
         var done = this.async(),
             options = this.options({
                 projects: [],
-                allowedStatuses: [1]
+                allowedStatuses: [1],
+                issueRequired: false
             }),
             gjt;
 
@@ -38,7 +49,8 @@ module.exports = function (grunt) {
         
         gjt = new JiraTodo(grunt, {
             projects: options.projects,
-            regex: options.regex,
+            todoRegex: options.todoRegex,
+            issueRegex: options.issueRegex,
             allowedStatuses: options.allowedStatuses,
             jira: {
                 url: options.jiraUrl,
@@ -49,10 +61,17 @@ module.exports = function (grunt) {
 
         gjt.processFiles(this.filesSrc, function (problems) {
             problems.forEach(function (problem) {
-                grunt.fail.warn(util.format(
-                    'File "%s" has a todo for issue %s (issue status: "%s").',
-                    problem.issue.file, problem.issue.key, problem.status.name
-                ));
+                if (problems.hasOwnProperty('key')) {
+                    grunt.fail.warn(util.format(
+                        'File "%s" has a todo for issue %s (issue status: "%s").',
+                        problem.issue.file, problem.issue.key, problem.status.name
+                    ));
+                } else if (options.issueRequired) {
+                    grunt.fail.warn(util.format(
+                        'File "%s" has a todo without a specified issue near "%s".',
+                        problem.issue.file, problem.issue.source.substr(0, 25)
+                    ));
+                }
             });
             
             done(true);
