@@ -1,5 +1,8 @@
 # Changelog
 
+#### v0.2.1 (2014-02-05)
+ - maintenance release
+
 #### v0.2.0 (2014-12-22)
  - added 'issueRequired' option
  - added JSX support
