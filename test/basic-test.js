@@ -18,7 +18,6 @@ describe('grunt-jira-todo', function () {
         }
     };
 
-
     it('extracts issues for a custom regex', function () {
         var gjt = new JiraTodo(gruntMock, {
                 todoRegex: 'BEWARE!\\s(?<text>.+)',
@@ -167,19 +166,21 @@ describe('grunt-jira-todo', function () {
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
-                issues: [{
-                    key: 'PM-1234',
-                    project: 'PM',
-                    number: 1234,
-                    file: sourceFile,
-                    source: sinon.match.string
-                }, {
-                    key: 'PM-42',
-                    project: 'PM',
-                    number: 42,
-                    file: sourceFile,
-                    source: sinon.match.string
-                }]
+                issues: [
+                    {
+                        key: 'PM-1234',
+                        project: 'PM',
+                        number: 1234,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    }, {
+                        key: 'PM-42',
+                        project: 'PM',
+                        number: 42,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    }
+                ]
             });
         });
 
@@ -194,41 +195,43 @@ describe('grunt-jira-todo', function () {
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
-                issues: [{
-                    key: 'PM-1234',
-                    project: 'PM',
-                    number: 1234,
-                    file: sourceFile,
-                    source: sinon.match.string
-                },
-                {
-                    key: 'PM-42',
-                    project: 'PM',
-                    number: 42,
-                    file: sourceFile,
-                    source: sinon.match.string
-                },
-                {
-                    key: 'ABC-13',
-                    project: 'ABC',
-                    number: 13,
-                    file: sourceFile,
-                    source: sinon.match.string
-                },
-                {
-                    key: 'ABC-99',
-                    project: 'ABC',
-                    number: 99,
-                    file: sourceFile,
-                    source: sinon.match.string
-                },
-                {
-                    key: 'ABC-99',
-                    project: 'ABC',
-                    number: 99,
-                    file: sourceFile,
-                    source: sinon.match.string
-                }]
+                issues: [
+                    {
+                        key: 'PM-1234',
+                        project: 'PM',
+                        number: 1234,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    },
+                    {
+                        key: 'PM-42',
+                        project: 'PM',
+                        number: 42,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    },
+                    {
+                        key: 'ABC-13',
+                        project: 'ABC',
+                        number: 13,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    },
+                    {
+                        key: 'ABC-99',
+                        project: 'ABC',
+                        number: 99,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    },
+                    {
+                        key: 'ABC-99',
+                        project: 'ABC',
+                        number: 99,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    }
+                ]
             });
         });
     });
@@ -246,15 +249,15 @@ describe('grunt-jira-todo', function () {
 
         nock('http://www.example.com')
             .get('/rest/api/2/issue/ABC-99').matchHeader('Authorization', authHeader)
-            .reply(200, { fields: { status: { id: '1', name: 'Open' } } })
+            .reply(200, { fields: { status: { id: '1', name: 'Open' }, issuetype: { id: '1' } } })
             .get('/rest/api/2/issue/XY-42').matchHeader('Authorization', authHeader)
-            .reply(200, { fields: { status: { id: '3', name: 'In Progress' } } });
+            .reply(200, { fields: { status: { id: '3', name: 'In Progress' }, issuetype: { id: '1' } } });
 
         gjt.getJiraStatusForIssues(['ABC-99', 'XY-42', 'ABC-99'], function (err, result) {
             expect(err).toBe(null);
             expect(result).toEqual({
-                'ABC-99': { id: 1, name: 'Open' },
-                'XY-42': { id: 3, name: 'In Progress' }
+                'ABC-99': { id: 1, type: 1, name: 'Open' },
+                'XY-42': { id: 3, type: 1, name: 'In Progress' }
             });
             done();
         });
@@ -269,6 +272,7 @@ describe('grunt-jira-todo', function () {
         gjt = new JiraTodo(gruntMock, {
             projects: ['ABC'],
             allowedStatuses: [1],
+            allowedIssueTypes: [1],
             jira: {
                 url: 'http://www.example.com',
                 username: 'user',
@@ -277,8 +281,18 @@ describe('grunt-jira-todo', function () {
         });
 
         nock('http://www.example.com')
-            .get('/rest/api/2/issue/ABC-13').reply(200, { fields: { status: { id: '6', name: 'Closed' } } })
-            .get('/rest/api/2/issue/ABC-99').reply(200, { fields: { status: { id: '1', name: 'Open' } } });
+            .get('/rest/api/2/issue/ABC-13').reply(200, { fields: {
+                status: { id: '6', name: 'Closed' },
+                issuetype: { id: '1' }
+            }})
+            .get('/rest/api/2/issue/ABC-99').reply(200, { fields: {
+                status: { id: '1', name: 'Open' },
+                issuetype: { id: '1' }
+            }})
+            .get('/rest/api/2/issue/ABC-1000').reply(200, { fields: {
+                status: { id: '1', name: 'Open' },
+                issuetype: { id: '2' }
+            }});
 
         gjt.processFiles([sourceFile], function (problems) {
             expect(problems).toMatch([{
@@ -287,6 +301,7 @@ describe('grunt-jira-todo', function () {
                     source: ' TODO: give this method a proper name!'
                 }
             }, {
+                kind: 'statusForbidden',
                 issue: {
                     key: 'ABC-13',
                     project: 'ABC',
@@ -294,7 +309,25 @@ describe('grunt-jira-todo', function () {
                     file: sourceFile,
                     source: sinon.match.string
                 },
-                status: { id: 6, name: 'Closed' }
+                status: {
+                    id: 6,
+                    type: 1,
+                    name: 'Closed'
+                }
+            }, {
+                kind: 'typeForbidden',
+                issue: {
+                    key: 'ABC-1000',
+                    project: 'ABC',
+                    number: 1000,
+                    file: sourceFile,
+                    source: sinon.match.string
+                },
+                status: {
+                    id: 1,
+                    type: 2,
+                    name: 'Open'
+                }
             }]);
             done();
         });

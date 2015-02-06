@@ -57,15 +57,16 @@ JiraTodo.prototype.processFiles = function (filenames, callback) {
         [].push.apply(allIssues, issuesFound.issues);
     }, this);
 
-
     this.getJiraStatusForIssues(_.pluck(allIssues, 'key'), function (err, statuses) {
         allIssues.forEach(function (issue) {
             var status = statuses[issue.key];
-            if (status !== null && self.opts.allowedStatuses.indexOf(status.id) === -1) {
-                problems.push({ issue: issue, status: status });
+            if (status !== null && self.opts.allowedIssueTypes.indexOf(status.type) === -1) {
+                problems.push({ kind: 'typeForbidden', issue: issue, status: status });
+            } else if (status !== null && self.opts.allowedStatuses.indexOf(status.id) === -1) {
+                problems.push({ kind: 'statusForbidden', issue: issue, status: status });
             }
         });
-        
+
         callback(problems);
     });
 };
@@ -216,6 +217,7 @@ JiraTodo.prototype.getJiraStatusForIssues = function (issueKeys, callback) {
 
             result[issueKey] = {
                 id: parseInt(data.fields.status.id, 10),
+                type: parseInt(data.fields.issuetype.id, 10),
                 name: data.fields.status.name
             };
             cb();

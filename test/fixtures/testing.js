@@ -30,4 +30,6 @@ define([
 
     // TODO ABC-99: what about someModule?!
     return Klass;
+
+    // TODO ABC-1000: This is a story
 });
