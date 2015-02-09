@@ -47,7 +47,7 @@ describe('grunt-jira-todo', function () {
                 issues = gjt.getIssuesForFile(sourceFile);
 
             expect(issues).toEqual({
-                incomplete: [{
+                withoutTicket: [{
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
@@ -62,7 +62,7 @@ describe('grunt-jira-todo', function () {
                 issues = gjt.getIssuesForFile(sourceFile);
 
             expect(issues).toMatch({
-                incomplete: [{
+                withoutTicket: [{
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
@@ -89,7 +89,7 @@ describe('grunt-jira-todo', function () {
                 issues = gjt.getIssuesForFile(sourceFile);
 
             expect(issues).toMatch({
-                incomplete: [{
+                withoutTicket: [{
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
@@ -147,7 +147,7 @@ describe('grunt-jira-todo', function () {
                 issues = gjt.getIssuesForFile(sourceFile);
 
             expect(issues).toEqual({
-                incomplete: [{
+                withoutTicket: [{
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
@@ -162,7 +162,7 @@ describe('grunt-jira-todo', function () {
                 issues = gjt.getIssuesForFile(sourceFile);
 
             expect(issues).toMatch({
-                incomplete: [{
+                withoutTicket: [{
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
@@ -191,7 +191,7 @@ describe('grunt-jira-todo', function () {
                 issues = gjt.getIssuesForFile(sourceFile);
 
             expect(issues).toMatch({
-                incomplete: [{
+                withoutTicket: [{
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
                 }],
@@ -249,15 +249,21 @@ describe('grunt-jira-todo', function () {
 
         nock('http://www.example.com')
             .get('/rest/api/2/issue/ABC-99').matchHeader('Authorization', authHeader)
-            .reply(200, { fields: { status: { id: '1', name: 'Open' }, issuetype: { id: '1' } } })
+            .reply(200, { fields: {
+                status: { id: '1', name: 'Open' },
+                issuetype: { id: '1', name: 'Bug' } }
+            })
             .get('/rest/api/2/issue/XY-42').matchHeader('Authorization', authHeader)
-            .reply(200, { fields: { status: { id: '3', name: 'In Progress' }, issuetype: { id: '1' } } });
+            .reply(200, { fields: {
+                status: { id: '3', name: 'In Progress' },
+                issuetype: { id: '1', name: 'Bug' } }
+            });
 
         gjt.getJiraStatusForIssues(['ABC-99', 'XY-42', 'ABC-99'], function (err, result) {
             expect(err).toBe(null);
             expect(result).toEqual({
-                'ABC-99': { id: 1, type: 1, name: 'Open' },
-                'XY-42': { id: 3, type: 1, name: 'In Progress' }
+                'ABC-99': { id: 1, type: 1, statusName: 'Open', typeName: 'Bug' },
+                'XY-42': { id: 3, type: 1, statusName: 'In Progress', typeName: 'Bug' }
             });
             done();
         });
@@ -283,19 +289,20 @@ describe('grunt-jira-todo', function () {
         nock('http://www.example.com')
             .get('/rest/api/2/issue/ABC-13').reply(200, { fields: {
                 status: { id: '6', name: 'Closed' },
-                issuetype: { id: '1' }
+                issuetype: { id: '1', name: 'Bug' }
             }})
             .get('/rest/api/2/issue/ABC-99').reply(200, { fields: {
                 status: { id: '1', name: 'Open' },
-                issuetype: { id: '1' }
+                issuetype: { id: '1', name: 'Bug' }
             }})
             .get('/rest/api/2/issue/ABC-1000').reply(200, { fields: {
                 status: { id: '1', name: 'Open' },
-                issuetype: { id: '2' }
+                issuetype: { id: '2', name: 'Bug' }
             }});
 
         gjt.processFiles([sourceFile], function (problems) {
             expect(problems).toMatch([{
+                kind: 'withoutTicket',
                 issue: {
                     file: sourceFile,
                     source: ' TODO: give this method a proper name!'
@@ -311,8 +318,9 @@ describe('grunt-jira-todo', function () {
                 },
                 status: {
                     id: 6,
+                    statusName: 'Closed',
                     type: 1,
-                    name: 'Closed'
+                    typeName: 'Bug'
                 }
             }, {
                 kind: 'typeForbidden',
@@ -325,8 +333,9 @@ describe('grunt-jira-todo', function () {
                 },
                 status: {
                     id: 1,
+                    statusName: 'Open',
                     type: 2,
-                    name: 'Open'
+                    typeName: 'Bug'
                 }
             }]);
             done();

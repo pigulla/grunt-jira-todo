@@ -66,17 +66,17 @@ module.exports = function (grunt) {
                 if (problem.kind === 'statusForbidden') {
                     grunt.fail.warn(util.format(
                         'File "%s" has a todo for issue %s (issue status: "%s").',
-                        problem.issue.file, problem.issue.key, problem.status.name
+                        problem.issue.file, problem.issue.key, problem.status.statusName
                     ));
-                } else if (options.issueRequired) {
+                } else if (problem.kind === 'withoutTicket' && options.issueRequired) {
                     grunt.fail.warn(util.format(
                         'File "%s" has a todo without a specified issue near "%s".',
                         problem.issue.file, problem.issue.source.trim().substr(0, 25)
                     ));
                 } else if (problem.kind === 'typeForbidden') {
                     grunt.fail.warn(util.format(
-                        'File "%s" has a todo for an issue of disallowed type %d near "%s".',
-                        problem.issue.file, problem.status.type, problem.issue.source.trim().substr(0, 25)
+                        'File "%s" has a todo for an issue of disallowed type "%s" near "%s".',
+                        problem.issue.file, problem.status.typeName, problem.issue.source.trim().substr(0, 25)
                     ));
                 }
             });

@@ -50,8 +50,8 @@ JiraTodo.prototype.processFiles = function (filenames, callback) {
     filenames.forEach(function (file) {
         var issuesFound = this.getIssuesForFile(file);
 
-        issuesFound.incomplete.forEach(function (issue) {
-            problems.push({ issue: issue });
+        issuesFound.withoutTicket.forEach(function (issue) {
+            problems.push({ kind: 'withoutTicket', issue: issue });
         });
 
         [].push.apply(allIssues, issuesFound.issues);
@@ -81,7 +81,7 @@ JiraTodo.prototype.getIssuesForFile = function (filename) {
     this.grunt.verbose.writeln('Processing file ' + filename);
 
     var issues = this.extractTodosFromFile(filename),
-        incompleteTodos = issues.filter(function (issue) {
+        todosWithoutIssue = issues.filter(function (issue) {
             return !issue.hasOwnProperty('key');
         }, this),
         relevantIssues = issues.filter(function (issue) {
@@ -95,7 +95,7 @@ JiraTodo.prototype.getIssuesForFile = function (filename) {
 
     return {
         issues: relevantIssues,
-        incomplete: incompleteTodos
+        withoutTicket: todosWithoutIssue
     };
 };
 
@@ -217,8 +217,9 @@ JiraTodo.prototype.getJiraStatusForIssues = function (issueKeys, callback) {
 
             result[issueKey] = {
                 id: parseInt(data.fields.status.id, 10),
+                statusName: data.fields.status.name,
                 type: parseInt(data.fields.issuetype.id, 10),
-                name: data.fields.status.name
+                typeName: data.fields.issuetype.name
             };
             cb();
         });
