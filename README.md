@@ -141,6 +141,8 @@ Also, make sure you use a secure connection (i.e. https) to protect your usernam
 In lieu of a formal style guide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+ * 2015-02-09   v0.3.0   Added `allowedIssueTypes` option.
+ * 2015-02-05   v0.2.1   Maintenance release.
  * 2014-12-22   v0.2.0   Added `issueRequired` option and JSX support.
  * 2014-11-28   v0.1.4   Maintenance release.
  * 2014-10-02   v0.1.3   Improved regex and bumped dependency versions.

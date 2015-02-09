@@ -1,6 +1,6 @@
 # Changelog
 
-#### v0.3.0 (2014-02-06)
+#### v0.3.0 (2014-02-09)
  - added 'allowedIssueTypes' option
 
 #### v0.2.1 (2014-02-05)
