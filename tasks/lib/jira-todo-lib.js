@@ -9,7 +9,7 @@ var _ = require('lodash'),
     request = require('request'),
     xregexp = require('xregexp').XRegExp;
 
-var TODO_REGEX = '(?:\\*|\\s)(todo|fixme)(?:!|:|\\s)(?<text>.+)',
+var TODO_REGEX = '(?:\\*|\\s)?(todo|fixme)(?:!|:|\\s)(?<text>.+)',
     ISSUE_REGEX = '(?<key>(?<project>[A-Z][_A-Z0-9]*)-(?<number>\\d+))';
 
 /**

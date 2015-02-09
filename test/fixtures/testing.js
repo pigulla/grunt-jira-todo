@@ -4,7 +4,7 @@ define([
     someModule
 ) {
     'use strict';
-    // TODO: PM-1234, X-99, PM-42
+    //TODO: PM-1234, X-99, PM-42
 
     /**
      * TODO TK-4711: Give this class a proper name!
