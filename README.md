@@ -142,7 +142,7 @@ In lieu of a formal style guide, take care to maintain the existing coding style
 
 ## Release History
  * 2015-03-20   v0.3.1   Maintenance release.  
- * 2015-02-09   v0.3.0   Added `allowedIssueTypes` option.  
+ * 2015-02-09   v0.3.0   Added `allowedIssueTypes` option.  
  * 2015-02-05   v0.2.1   Maintenance release.  
  * 2014-12-22   v0.2.0   Added `issueRequired` option and JSX support.  
  * 2014-11-28   v0.1.4   Maintenance release.  
