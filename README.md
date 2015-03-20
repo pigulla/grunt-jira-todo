@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/pigulla/grunt-jira-todo.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo)
 [![devDependency Status](https://david-dm.org/pigulla/grunt-jira-todo/dev-status.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo#info=devDependencies)
 
-# grunt-jira-todo 0.3.0
+# grunt-jira-todo 0.3.1
 
 > Check your JavaScript source files for comments containing TODOs that reference Jira issues. Causes warnings if the status of a referenced issue is "Open" (or any other number of configurable statuses).
 
