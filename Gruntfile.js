@@ -2,7 +2,7 @@
  * grunt-jira-todo
  * https://github.com/pigulla/grunt-jira-todo
  *
- * Copyright (c) 2014 Raphael Pigulla
+ * Copyright (c) 2014-2015 Raphael Pigulla
  * Licensed under the MIT license.
  */
 

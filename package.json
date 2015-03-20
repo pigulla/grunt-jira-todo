@@ -1,7 +1,7 @@
 {
   "name": "grunt-jira-todo",
   "description": "Check statuses of TODOs referencing Jira tasks.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://github.com/pigulla/grunt-jira-todo",
   "author": {
     "name": "Raphael Pigulla",
@@ -29,9 +29,9 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "esprima-fb": "^10001.1.0-dev-harmony-fb",
-    "estraverse": "^1.9.1",
-    "estraverse-fb": "^1.3.0",
+    "esprima-fb": "^13001.1001.0-dev-harmony-fb",
+    "estraverse": "^3.1.0",
+    "estraverse-fb": "^1.3.1",
     "lodash": "^3.1.0",
     "request": "^2.53.0",
     "xregexp": "^2.0.0"
@@ -39,7 +39,7 @@
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.0",
-    "nock": "^0.59.1",
+    "nock": "^1.2.0",
     "sinon": "^1.12.1",
     "grunt-buster": "^0.3.2"
   },

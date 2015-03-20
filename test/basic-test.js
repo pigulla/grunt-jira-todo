@@ -236,6 +236,35 @@ describe('grunt-jira-todo', function () {
         });
     });
 
+    describe('extracts issues from a ES6 file', function () {
+        var sourceFile = 'mysource.js',
+            actualSource = fs.readFileSync(path.join(__dirname, 'fixtures', 'testing.es6.js')).toString();
+
+        before(function () {
+            gruntMock.file.read.withArgs(sourceFile).returns(actualSource);
+        });
+
+        it('for one project', function () {
+            var gjt = new JiraTodo(gruntMock, {
+                    projects: ['PM']
+                }),
+                issues = gjt.getIssuesForFile(sourceFile);
+
+            expect(issues).toMatch({
+                withoutTicket: [],
+                issues: [
+                    {
+                        key: 'PM-42',
+                        project: 'PM',
+                        number: 42,
+                        file: sourceFile,
+                        source: sinon.match.string
+                    }
+                ]
+            });
+        });
+    });
+
     it('generates the right requests', function (done) {
         var authHeader = 'Basic ' + new Buffer('jiraUser:jiraPass').toString('base64'),
             gjt = new JiraTodo(gruntMock, {

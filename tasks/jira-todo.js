@@ -2,7 +2,7 @@
  * grunt-jira-todo
  * https://github.com/pigulla/grunt-jira-todo
  *
- * Copyright (c) 2014 Raphael Pigulla
+ * Copyright (c) 2014-2015 Raphael Pigulla
  * Licensed under the MIT license.
  */
 
@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                 grunt.fail.warn(util.format('Configuration option "%s" must be of type string.', key));
             }
         });
-        
+
         ['allowedStatuses', 'allowedIssueTypes', 'projects'].forEach(function (name) {
             if (!Array.isArray(options.projects)) {
                 grunt.fail.warn(util.format('Configuration option "%s" is missing or not an array.', name));
@@ -35,7 +35,7 @@ module.exports = function (grunt) {
             }
         });
     }
-    
+
     grunt.registerMultiTask('jira-todo', 'Check statuses of TODOs referencing Jira tasks.', function () {
         var done = this.async(),
             options = this.options({
@@ -47,7 +47,7 @@ module.exports = function (grunt) {
             gjt;
 
         validateOptions(options);
-        
+
         gjt = new JiraTodo(grunt, {
             projects: options.projects,
             todoRegex: options.todoRegex,
@@ -80,7 +80,7 @@ module.exports = function (grunt) {
                     ));
                 }
             });
-            
+
             done(true);
         });
     });
