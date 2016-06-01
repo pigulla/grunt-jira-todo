@@ -1,3 +1,9 @@
+![no maintenance intended](https://img.shields.io/badge/%E2%A8%89-no%20maintenance%20intended-red.svg?style=flat-square)
+![new maintainer welcomed](https://img.shields.io/badge/%E2%9A%90-new%20maintainer%20welcomed-yellow.svg?style=flat-square)
+#### No maintenance intended
+This package has been superseded by [jira-todo](https://github.com/pigulla/jira-todo). If anyone wants to adapt this Grunt plugin to use the new backend, please open an [issue](https://github.com/pigulla/grunt-jira-todo/issues) and I'll happily transfer ownership of the `grunt-jira-todo` package name.
+
+-- 
 [![NPM version](http://img.shields.io/npm/v/grunt-jira-todo.svg?style=flat-square)](http://badge.fury.io/js/grunt-jira-todo)
 [![Dependency Status](https://david-dm.org/pigulla/grunt-jira-todo.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo)
 [![devDependency Status](https://david-dm.org/pigulla/grunt-jira-todo/dev-status.svg?style=flat-square)](https://david-dm.org/pigulla/grunt-jira-todo#info=devDependencies)
